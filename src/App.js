@@ -28,14 +28,14 @@ class App extends Component {
     this.getVotingKey = this.getVotingKey.bind(this)
     this.onChangeAutoComplete = address => {
       const form = this.state.form
-      form.fullAddress = address
+      form.instituteAddress = address
       this.setState({ form })
     }
     this.onSelect = this.onSelectAutocomplete.bind(this)
     this.state = {
       web3Config: {},
       form: {
-        fullAddress: '',
+        instituteAddress: '',
         expirationDate: '',
         postal_code: '',
         us_state: '',
@@ -43,6 +43,7 @@ class App extends Component {
         lastName: '',
         licenseId: '',
         contactEmail: '',
+        //isCompany: false
         isCompany: helpers.isCompanyAllowed(Number(this.props.web3Config.netId))
       },
       hasData: false
@@ -68,7 +69,7 @@ class App extends Component {
         msg = `
           First Name: <b>${pendingChange.firstName}</b> <br/>
           Last Name: <b>${pendingChange.lastName}</b> <br/>
-          Full Address: <b>${pendingChange.fullAddress}</b> <br/>
+          Full Address: <b>${pendingChange.instituteAddress}</b> <br/>
           Expiration Date: <b>${pendingChange.expirationDate}</b> <br />
           License ID: <b>${pendingChange.licenseId}</b> <br/>
           US state: <b>${pendingChange.us_state}</b> <br/>
@@ -79,7 +80,7 @@ class App extends Component {
     }
     this.setState({
       form: {
-        fullAddress: currentData.fullAddress,
+        instituteAddress: currentData.instituteAddress,
         expirationDate: currentData.expirationDate,
         postal_code: currentData.postal_code,
         us_state: currentData.us_state,
@@ -168,7 +169,7 @@ class App extends Component {
           break
       }
       let form = this.state.form
-      form.fullAddress = `${address_components.street_number} ${address_components.route} ${
+      form.instituteAddress = `${address_components.street_number} ${address_components.route} ${
         address_components.locality
       }`
       form.us_state = address_components.administrative_area_level_1
@@ -200,7 +201,7 @@ class App extends Component {
         firstName: this.state.form.firstName,
         lastName: this.state.form.lastName,
         licenseId: this.state.form.licenseId,
-        fullAddress: this.state.form.fullAddress,
+        instituteAddress: this.state.form.instituteAddress,
         state: this.state.form.us_state,
         zipcode: this.state.form.postal_code,
         expirationDate: moment(this.state.form.expirationDate).unix(),
@@ -250,7 +251,7 @@ class App extends Component {
     const inputProps = {
       id: 'address',
       onChange: this.onChangeAutoComplete,
-      value: this.state.form.fullAddress
+      value: this.state.form.instituteAddress
     }
     const AutocompleteItem = ({ formattedSuggestion }) => (
       <div className="vld-App_FormAutocompleteItem">

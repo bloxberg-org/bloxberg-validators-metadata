@@ -11,7 +11,7 @@ function addressesURL(branch) {
 function ABIURL(branch, contract) {
   const URL = `https://raw.githubusercontent.com/${constants.organization}/${constants.repoName}/${branch}/abis/${
     constants.ABIsSources[contract]
-  }`
+    }`
   console.log(URL)
   return URL
 }

@@ -2,12 +2,12 @@ import { constants } from '../utils/constants'
 import helpers from './helpers'
 import helpersGlobal from '../utils/helpers'
 import messages from '../utils/messages'
-/*const local = {
-  METADATA_ADDRESS: '0xcBB2912666c7e8023B7ec78B6842702eB26336aC',
-  KEYS_MANAGER_ADDRESS: '0x2b1dbc7390a65dc40f7d64d67ea11b4d627dd1bf',
-  POA_ADDRESS: '0x83451c8bc04d4ee9745ccc58edfab88037bc48cc',
-  MOC: '0xCf260eA317555637C55F70e55dbA8D5ad8414Cb0'
-}*/
+// const local = {
+//   METADATA_ADDRESS: '0xe9a1e0dcbde0ca17f96b194993a0e971b7a880c8',
+//   //KEYS_MANAGER_ADDRESS: '0x2b1dbc7390a65dc40f7d64d67ea11b4d627dd1bf',
+//   POA_ADDRESS: '0x379a599f4141f772f802e8c6928c495b8612c142',
+//   //MOC: '0x9850711951A84Ef8a2A31a7868d0dCa34B0661cA'
+// }
 
 export default web3Config => {
   const branch = constants.NETWORKS[web3Config.netId].BRANCH

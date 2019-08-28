@@ -15,7 +15,9 @@ function isCompanyAllowed(netId) {
   switch (netId) {
     case netIdByName(constants.branches.DAI):
     case netIdByName(constants.branches.KOVAN):
-      return true
+      return false
+      //Originally set to true, for research institutes may switch back
+    // return true
     default:
       return false
   }

@@ -1,8 +1,8 @@
 import AllValidators from './components/AllValidators'
 import App from './App'
-import KeysManager from './contracts/KeysManager.contract'
+// import KeysManager from './contracts/KeysManager.contract'
 import Metadata from './contracts/Metadata.contract'
-import ProofOfPhysicalAddress from './contracts/ProofOfPhysicalAddress.contract'
+// import ProofOfPhysicalAddress from './contracts/ProofOfPhysicalAddress.contract'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
@@ -22,7 +22,7 @@ import { getNetworkBranch } from './utils/utils'
 import { messages } from './utils/messages'
 
 const history = createBrowserHistory()
-const baseRootPath = '/poa-dapps-validators'
+const baseRootPath = '/bloxberg-dapps-validators'
 const setMetadataPath = `${baseRootPath}/set`
 const pendingChangesPath = `${baseRootPath}/pending-changes`
 
@@ -60,15 +60,17 @@ class AppMainRouter extends Component {
         return networkAddresses(web3Config)
       })
       .then(async config => {
+        console.log(config)
         const { web3Config, addresses } = config
-        await this.initContracts({
-          web3: web3Config.web3Instance,
-          netId: web3Config.netId,
-          addresses
-        })
+
+         await this.initContracts({
+           web3: web3Config.web3Instance,
+           netId: web3Config.netId,
+           addresses
+         })
         this.setState({
           votingKey: web3Config.defaultAccount,
-          miningKey: await this.state.keysManager.miningKeyByVoting(web3Config.defaultAccount),
+          // miningKey: await this.state.keysManager.miningKeyByVoting(web3Config.defaultAccount),
           injectedWeb3: web3Config.injectedWeb3
         })
       })
@@ -79,33 +81,33 @@ class AppMainRouter extends Component {
       })
   }
   async initContracts({ web3, netId, addresses }) {
-    const keysManager = new KeysManager()
-    await keysManager.init({
-      web3,
-      netId,
-      addresses
-    })
+   // const keysManager = new KeysManager()
+   // await keysManager.init({
+   //   web3,
+   //   netId,
+   //   addresses
+   // })
     const metadataContract = new Metadata()
     await metadataContract.init({
       web3,
       netId,
       addresses
     })
-    let proofOfPhysicalAddressContract = new ProofOfPhysicalAddress()
-    try {
-      await proofOfPhysicalAddressContract.init({
-        web3,
-        netId,
-        addresses
-      })
-    } catch (e) {
-      console.error('Error initializing ProofOfPhysicalAddress', e)
-      proofOfPhysicalAddressContract = null
-    }
+   // let proofOfPhysicalAddressContract = new ProofOfPhysicalAddress()
+   // try {
+   //   await proofOfPhysicalAddressContract.init({
+   //     web3,
+   //     netId,
+   //     addresses
+    //  })
+   // } catch (e) {
+    //  console.error('Error initializing ProofOfPhysicalAddress', e)
+    //  proofOfPhysicalAddressContract = null
+    // }
     this.setState({
-      keysManager,
+    // keysManager,
       metadataContract,
-      proofOfPhysicalAddressContract,
+    //  proofOfPhysicalAddressContract,
       loading: false,
       netId
     })

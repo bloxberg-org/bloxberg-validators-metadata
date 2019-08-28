@@ -45,8 +45,8 @@ let getWeb3 = () => {
         }
 
         const accounts = await web3.eth.getAccounts()
-
         defaultAccount = accounts[0] || null
+
       } else {
         // Fallback to localhost if no web3 injection.
         console.log('No web3 instance injected, using Local web3.')
@@ -59,18 +59,20 @@ let getWeb3 = () => {
         } else if (window.location.host.indexOf(constants.branches.DAI) !== -1) {
           netId = helpers.netIdByName(constants.branches.DAI)
         } else {
-          netId = helpers.netIdByName(constants.branches.CORE)
+          netId = helpers.netIdByName(constants.branches.BLOXBERG)
         }
 
         const network = constants.NETWORKS[netId]
-
+        console.log(network.RPC)
         web3 = new Web3(new Web3.providers.HttpProvider(network.RPC))
+        console.log(web3)
         netIdName = network.NAME
       }
 
-      document.title = `${netIdName} - POA Validators DApp`
+      document.title = `${netIdName} - bloxberg Validators DApp`
 
       if (errorMsg !== null) {
+        console.log(errorMsg)
         reject({ message: errorMsg })
         return
       }

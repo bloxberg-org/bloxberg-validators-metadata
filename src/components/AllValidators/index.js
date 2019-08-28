@@ -90,7 +90,7 @@ export default class AllValidators extends Component {
         // Else, map the physical address from the validator's metadata .
         if (physicalAddresses && physicalAddresses.length > 0) {
           validatorPhysicalAddresses = physicalAddresses.map(physicalAddress => ({
-            fullAddress: `${physicalAddress.data.location} ${physicalAddress.data.city}`,
+            instituteAddress: `${physicalAddress.data.location} ${physicalAddress.data.city}`,
             us_state: physicalAddress.data.state,
             postal_code: physicalAddress.data.zip,
             isConfirmed: physicalAddress.isConfirmed === true
@@ -98,7 +98,7 @@ export default class AllValidators extends Component {
         } else {
           validatorPhysicalAddresses = [
             {
-              fullAddress: validator.fullAddress,
+              instituteAddress: validator.instituteAddress,
               us_state: validator.us_state,
               postal_code: validator.postal_code,
               isConfirmed: false
@@ -119,7 +119,7 @@ export default class AllValidators extends Component {
         ...validator,
         physicalAddresses: [
           {
-            fullAddress: validator.fullAddress,
+            instituteAddress: validator.instituteAddress,
             us_state: validator.us_state,
             postal_code: validator.postal_code
           }
@@ -168,7 +168,7 @@ export default class AllValidators extends Component {
           createdDate={validator.createdDate}
           expirationDate={validator.expirationDate}
           firstName={validator.firstName}
-          fullAddress={validator.fullAddress}
+          instituteAddress={validator.instituteAddress}
           index={validator.index}
           isCompany={validator.isCompany}
           key={index}

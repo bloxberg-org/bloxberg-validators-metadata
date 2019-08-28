@@ -4,3 +4,4 @@ config
 public
 scripts
 submodules
+src

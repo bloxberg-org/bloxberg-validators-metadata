@@ -1,20 +1,21 @@
 const constants = {}
-constants.organization = 'poanetwork'
-constants.repoName = 'poa-chain-spec'
+constants.organization = 'bloxberg-org'
+constants.repoName = 'bloxberg-network-consensus-contracts'
 constants.addressesSourceFile = 'contracts.json'
 constants.ABIsSources = {
-  KeysManager: 'KeysManager.abi.json',
+  // KeysManager: 'KeysManager.abi.json',
   PoaNetworkConsensus: 'PoaNetworkConsensus.abi.json',
-  ValidatorMetadata: 'ValidatorMetadata.abi.json',
-  ProofOfPhysicalAddress: 'ProofOfPhysicalAddress.abi.json'
+  ValidatorMetadata: 'ValidatorMetadata.abi.json'
+  // ProofOfPhysicalAddress: 'ProofOfPhysicalAddress.abi.json'
 }
 constants.userDeniedTransactionPattern = 'User denied transaction'
-constants.rootPath = '/poa-dapps-validators'
+constants.rootPath = '/bloxberg-dapps-validators'
 constants.branches = {
   DAI: 'dai',
   CORE: 'core',
   SOKOL: 'sokol',
-  KOVAN: 'kovan'
+  KOVAN: 'kovan',
+  BLOXBERG: 'master'
 }
 
 constants.navigationData = [
@@ -58,6 +59,12 @@ constants.NETWORKS = {
     NAME: 'Dai',
     RPC: 'https://dai.poa.network',
     BRANCH: constants.branches.DAI,
+    TESTNET: false
+  },
+  '8995': {
+    NAME: 'bloxberg',
+    RPC: 'https://core.bloxberg.org',
+    BRANCH: constants.branches.BLOXBERG,
     TESTNET: false
   }
 }

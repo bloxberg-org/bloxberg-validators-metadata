@@ -33,6 +33,7 @@ export default class Metadata {
     const MetadataAbi = await helpers.getABI(constants.NETWORKS[netId].BRANCH, 'ValidatorMetadata')
 
     this.metadataInstance = new web3.eth.Contract(MetadataAbi, METADATA_ADDRESS)
+    console.log(this.metadataInstance)
     if (MOC) {
       this.MOC_ADDRESS = MOC
     }
@@ -40,14 +41,14 @@ export default class Metadata {
 
     const poaInstance = new PoaConsensus()
     await poaInstance.init({ web3, netId, addresses })
-    this.mocRemoved = await poaInstance.isMasterOfCeremonyRemoved()
+    // this.mocRemoved = await poaInstance.isMasterOfCeremonyRemoved()
     this.miningKeys = await poaInstance.getValidators()
   }
   async createMetadata({
     firstName,
     lastName,
     licenseId,
-    fullAddress,
+    instituteAddress,
     state,
     zipcode,
     expirationDate,
@@ -64,7 +65,7 @@ export default class Metadata {
       this.web3.utils.fromAscii(firstName),
       this.web3.utils.fromAscii(lastName),
       this.web3.utils.fromAscii(licenseId),
-      fullAddress,
+      instituteAddress,
       this.web3.utils.fromAscii(state),
       this.web3.utils.fromAscii(zipcode),
       expirationDate
@@ -84,7 +85,7 @@ export default class Metadata {
     return {
       firstName: 'Igor',
       lastName: 'Barinov',
-      fullAddress: '755 Bounty Dr 202, Foster City',
+      instituteAddress: '755 Bounty Dr 202, Foster City',
       createdDate: '2017-12-18',
       updatedDate: '',
       expirationDate: '2021-07-23',
@@ -101,30 +102,32 @@ export default class Metadata {
       helpersGlobal.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
       return {}
     }
-
-    let validatorData = await this.metadataInstance.methods.validators(miningKey).call()
+    let validatorData = await this.metadataInstance.methods.validatorsMetadata(miningKey).call()
+    //let validatorData = await this.metadataInstance.methods.validators(miningKey).call()
+    console.log(validatorData)
     let createdDate = validatorData.createdDate > 0 ? moment.unix(validatorData.createdDate).format('YYYY-MM-DD') : ''
     let updatedDate = validatorData.updatedDate > 0 ? moment.unix(validatorData.updatedDate).format('YYYY-MM-DD') : ''
     let expirationDate =
       validatorData.expirationDate > 0 ? moment.unix(validatorData.expirationDate).format('YYYY-MM-DD') : ''
     let contactEmail
     if (validatorData.hasOwnProperty('contactEmail')) {
-      contactEmail = toAscii(validatorData.contactEmail)
+      contactEmail = validatorData.contactEmail
     }
     let isCompany
     if (validatorData.hasOwnProperty('isCompany')) {
       isCompany = validatorData.isCompany
     }
+    console.log(validatorData.instituteAddress)
     return {
-      firstName: toAscii(validatorData.firstName),
-      lastName: toAscii(validatorData.lastName),
-      fullAddress: validatorData.fullAddress,
+      firstName: validatorData.firstName,
+      lastName: validatorData.lastName,
+      instituteAddress: validatorData.instituteAddress,
       createdDate,
       updatedDate,
       expirationDate,
-      licenseId: toAscii(validatorData.licenseId),
-      us_state: toAscii(validatorData.state),
-      postal_code: toAscii(validatorData.zipcode),
+      licenseId: validatorData.licenseId,
+      us_state: validatorData.state,
+      //postal_code: toAscii(validatorData.zipcode),
       contactEmail,
       isCompany
     }
@@ -144,6 +147,7 @@ export default class Metadata {
           data = this.getMocData()
         } else {
           data = await this.getValidatorData(key)
+          
         }
         data.address = key
         all.push(data)
@@ -172,16 +176,15 @@ export default class Metadata {
       isCompany = pendingChanges.isCompany
     }
     return {
-      firstName: toAscii(pendingChanges.firstName),
-      lastName: toAscii(pendingChanges.lastName),
-      fullAddress: pendingChanges.fullAddress,
+      firstName: pendingChanges.firstName,
+      lastName: pendingChanges.lastName,
+      instituteAddress: pendingChanges.instituteAddress,
       createdDate,
       updatedDate,
       expirationDate,
-      licenseId: toAscii(pendingChanges.licenseId),
-      us_state: toAscii(pendingChanges.state),
-      postal_code: toAscii(pendingChanges.zipcode),
-      minThreshold: pendingChanges.minThreshold,
+      licenseId: pendingChanges.licenseId,
+      us_state: pendingChanges.state,
+      //postal_code: toAscii(validatorData.zipcode),
       contactEmail,
       isCompany
     }

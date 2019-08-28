@@ -10,9 +10,9 @@ class Validator extends Component {
     this.state = {
       confirmation: null
     }
-    this.props.metadataContract.getConfirmations({ miningKey: this.props.address }).then(confirmation => {
-      this.setState({ confirmation: confirmation[0] })
-    })
+    // this.props.metadataContract.getConfirmations({ miningKey: this.props.address }).then(confirmation => {
+    //   this.setState({ confirmation: confirmation[0] })
+    // })
   }
 
   render() {
@@ -34,13 +34,14 @@ class Validator extends Component {
     } = this.props
 
     if (helpers.isCompanyAllowed(netId) && !createdDate) {
-      isCompany = true
+       isCompany = false
+      //originally true
     }
 
     const showAllValidators = this.props.methodToCall === 'getAllValidatorsData'
     const indexAndAddress = showAllValidators ? `#${index}. ${address}` : address
     const fullName = isCompany ? firstName : `${firstName} ${lastName}`
-    const titleFirstColumn = isCompany ? 'Company' : 'Notary'
+    const titleFirstColumn = isCompany ? 'Company' : 'bloxberg Member'
     const titleSecondColumn = isCompany ? '' : 'Notary license'
     const confirmedAddresses = physicalAddresses.filter(a => a.isConfirmed)
     const unconfirmedAddresses = physicalAddresses.filter(a => !a.isConfirmed)
