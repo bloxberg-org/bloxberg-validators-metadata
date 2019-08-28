@@ -3,6 +3,7 @@ import xDaiLogo from './xdai.svg'
 import poaLogo from './core.svg'
 import sokolLogo from './sokol.svg'
 import kovanLogo from './kovan.svg'
+import bloxbergLogo from './bloxberg.png'
 
 const getLogoSrc = networkBranch => {
   return (
@@ -10,8 +11,9 @@ const getLogoSrc = networkBranch => {
       core: poaLogo,
       sokol: sokolLogo,
       dai: xDaiLogo,
-      kovan: kovanLogo
-    }[networkBranch] || poaLogo
+      kovan: kovanLogo,
+      bloxberg: bloxbergLogo,
+    }[networkBranch] || bloxbergLogo
   )
 }
 

@@ -166,14 +166,14 @@ export default class AllValidators extends Component {
           address={validator.address}
           contactEmail={validator.contactEmail}
           createdDate={validator.createdDate}
-          expirationDate={validator.expirationDate}
+          researchField={validator.researchField}
           firstName={validator.firstName}
           instituteAddress={validator.instituteAddress}
           index={validator.index}
           isCompany={validator.isCompany}
           key={index}
           lastName={validator.lastName}
-          licenseId={validator.licenseId}
+          researchInstitute={validator.researchInstitute}
           metadataContract={this.props.web3Config.metadataContract}
           methodToCall={this.props.methodToCall}
           netId={this.state.netId}

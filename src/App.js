@@ -36,12 +36,12 @@ class App extends Component {
       web3Config: {},
       form: {
         instituteAddress: '',
-        expirationDate: '',
+        researchField: '',
         postal_code: '',
         us_state: '',
         firstName: '',
         lastName: '',
-        licenseId: '',
+        researchInstitute: '',
         contactEmail: '',
         //isCompany: false
         isCompany: helpers.isCompanyAllowed(Number(this.props.web3Config.netId))
@@ -70,8 +70,8 @@ class App extends Component {
           First Name: <b>${pendingChange.firstName}</b> <br/>
           Last Name: <b>${pendingChange.lastName}</b> <br/>
           Full Address: <b>${pendingChange.instituteAddress}</b> <br/>
-          Expiration Date: <b>${pendingChange.expirationDate}</b> <br />
-          License ID: <b>${pendingChange.licenseId}</b> <br/>
+          Research Field: <b>${pendingChange.researchField}</b> <br />
+          Institute Name: <b>${pendingChange.researchInstitute}</b> <br/>
           US state: <b>${pendingChange.us_state}</b> <br/>
           Zip Code: <b>${pendingChange.postal_code}</b> <br/>
         `
@@ -81,12 +81,12 @@ class App extends Component {
     this.setState({
       form: {
         instituteAddress: currentData.instituteAddress,
-        expirationDate: currentData.expirationDate,
+        researchField: currentData.researchField,
         postal_code: currentData.postal_code,
         us_state: currentData.us_state,
         firstName: currentData.firstName,
         lastName: currentData.lastName,
-        licenseId: currentData.licenseId,
+        researchInstitute: currentData.researchInstitute,
         contactEmail: currentData.contactEmail,
         isCompany: hasData ? currentData.isCompany : this.state.form.isCompany
       },
@@ -135,7 +135,7 @@ class App extends Component {
           }
         }
       })
-      const isAfter = moment(this.state.form.expirationDate).isAfter(moment())
+      const isAfter = moment(this.state.form.researchField).isAfter(moment())
       if (!isAfter) {
         this.setState({ loading: false })
         helpers.generateAlert('warning', 'Warning!', 'Expiration date should be valid')
@@ -200,11 +200,11 @@ class App extends Component {
       .createMetadata({
         firstName: this.state.form.firstName,
         lastName: this.state.form.lastName,
-        licenseId: this.state.form.licenseId,
+        researchInstitute: this.state.form.researchInstitute,
         instituteAddress: this.state.form.instituteAddress,
         state: this.state.form.us_state,
         zipcode: this.state.form.postal_code,
-        expirationDate: moment(this.state.form.expirationDate).unix(),
+        researchField: moment(this.state.form.researchField).unix(),
         contactEmail: this.state.form.contactEmail,
         isCompany: this.state.form.isCompany,
         votingKey: this.getVotingKey(),
@@ -315,19 +315,19 @@ class App extends Component {
           )}
           {isCompany ? null : (
             <FormInput
-              id="licenseId"
+              id="researchInstitute"
               onChange={this.onChangeFormField}
-              title="License id"
-              value={this.state.form.licenseId}
+              title="Institute Name"
+              value={this.state.form.researchInstitute}
             />
           )}
           {isCompany ? null : (
             <FormInput
-              id="expirationDate"
+              id="researchField"
               onChange={this.onChangeFormField}
-              title="License expiration"
+              title="Research Field"
               type="date"
-              value={this.state.form.expirationDate}
+              value={this.state.form.researchField}
             />
           )}
           {isCompany ? null : (

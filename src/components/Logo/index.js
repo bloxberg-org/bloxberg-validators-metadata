@@ -3,6 +3,7 @@ import { LogoDai } from '../LogoDai'
 import { LogoPOA } from '../LogoPOA'
 import { LogoSokol } from '../LogoSokol'
 import { LogoKovan } from '../LogoKovan'
+import { LogoBloxberg } from '../LogoBloxberg'
 import { constants } from '../../utils/constants'
 
 export const Logo = ({ href = null, extraClass = '', networkBranch = '' }) => {
@@ -15,6 +16,6 @@ export const Logo = ({ href = null, extraClass = '', networkBranch = '' }) => {
       return <LogoDai href={href} extraClass={extraClass} />
     case constants.branches.CORE:
     default:
-      return <LogoPOA href={href} extraClass={extraClass} />
+      return <LogoBloxberg href={href} extraClass={extraClass} />
   }
 }

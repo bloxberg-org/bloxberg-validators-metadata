@@ -21,12 +21,12 @@ class Validator extends Component {
       children,
       contactEmail,
       createdDate,
-      expirationDate,
+      researchField,
       firstName,
       index,
       isCompany,
       lastName,
-      licenseId,
+      researchInstitute,
       netId,
       networkBranch,
       physicalAddresses,
@@ -42,7 +42,7 @@ class Validator extends Component {
     const indexAndAddress = showAllValidators ? `#${index}. ${address}` : address
     const fullName = isCompany ? firstName : `${firstName} ${lastName}`
     const titleFirstColumn = isCompany ? 'Company' : 'bloxberg Member'
-    const titleSecondColumn = isCompany ? '' : 'Notary license'
+    const titleSecondColumn = isCompany ? '' : 'Research Institute'
     const confirmedAddresses = physicalAddresses.filter(a => a.isConfirmed)
     const unconfirmedAddresses = physicalAddresses.filter(a => !a.isConfirmed)
     const addresses = confirmedAddresses.concat(unconfirmedAddresses)
@@ -67,11 +67,7 @@ class Validator extends Component {
             />
             <div className="vl-Validator_InfoList">
               <ValidatorDataPair data={['Full Name', fullName]} />
-              {isCompany ? null : (
-                <ValidatorDataPair
-                  data={['Address', <PhysicalAddressValue networkBranch={networkBranch} addresses={addresses} />]}
-                />
-              )}
+              {isCompany ? null : <ValidatorDataPair data={['Research Field', researchField]} />}
               {isCompany ? <ValidatorDataPair data={['Contact E-mail', contactEmail]} /> : null}
             </div>
           </div>
@@ -82,9 +78,14 @@ class Validator extends Component {
               type={isCompany ? '' : 'notaryLicense'}
             />
             <div className="vl-Validator_InfoList">
-              {isCompany ? null : <ValidatorDataPair data={['License ID', licenseId]} />}
-              {isCompany ? null : <ValidatorDataPair data={['License Expiration', expirationDate]} />}
-              <ValidatorDataPair data={['Miner Creation Date', createdDate]} />
+              {isCompany ? null : <ValidatorDataPair data={['Institute Name', researchInstitute]} />}
+              {isCompany ? null : (
+                <ValidatorDataPair
+                  data={['Address', <PhysicalAddressValue networkBranch={networkBranch} addresses={addresses} />]}
+                />
+              )}
+
+              {/* <ValidatorDataPair data={['Miner Creation Date', createdDate]} /> */}
               {updatedDate ? <ValidatorDataPair data={['Pending Change Date', updatedDate]} /> : null}
             </div>
           </div>

@@ -47,28 +47,28 @@ export default class Metadata {
   async createMetadata({
     firstName,
     lastName,
-    licenseId,
+    researchInstitute,
     instituteAddress,
     state,
     zipcode,
-    expirationDate,
+    researchField,
     contactEmail,
     isCompany,
     votingKey,
     hasData
   }) {
     const methodToCall = hasData ? 'changeRequest' : 'createMetadata'
-    if (isCompany && isNaN(expirationDate)) {
-      expirationDate = 0
+    if (isCompany && isNaN(researchField)) {
+      researchField = 0
     }
     let input = [
       this.web3.utils.fromAscii(firstName),
       this.web3.utils.fromAscii(lastName),
-      this.web3.utils.fromAscii(licenseId),
+      this.web3.utils.fromAscii(researchInstitute),
       instituteAddress,
       this.web3.utils.fromAscii(state),
       this.web3.utils.fromAscii(zipcode),
-      expirationDate
+      researchField
     ]
     if (helpersGlobal.isCompanyAllowed(this.netId)) {
       input.push(this.web3.utils.fromAscii(contactEmail))
@@ -88,8 +88,8 @@ export default class Metadata {
       instituteAddress: '755 Bounty Dr 202, Foster City',
       createdDate: '2017-12-18',
       updatedDate: '',
-      expirationDate: '2021-07-23',
-      licenseId: '2206724',
+      researchField: '2021-07-23',
+      researchInstitute: '2206724',
       us_state: 'CA',
       postal_code: '94404',
       contactEmail: '',
@@ -107,8 +107,9 @@ export default class Metadata {
     console.log(validatorData)
     let createdDate = validatorData.createdDate > 0 ? moment.unix(validatorData.createdDate).format('YYYY-MM-DD') : ''
     let updatedDate = validatorData.updatedDate > 0 ? moment.unix(validatorData.updatedDate).format('YYYY-MM-DD') : ''
-    let expirationDate =
-      validatorData.expirationDate > 0 ? moment.unix(validatorData.expirationDate).format('YYYY-MM-DD') : ''
+    //let researchField =
+    //  validatorData.researchField > 0 ? moment.unix(validatorData.researchField).format('YYYY-MM-DD') : ''
+    let researchField = validatorData.researchField
     let contactEmail
     if (validatorData.hasOwnProperty('contactEmail')) {
       contactEmail = validatorData.contactEmail
@@ -124,8 +125,8 @@ export default class Metadata {
       instituteAddress: validatorData.instituteAddress,
       createdDate,
       updatedDate,
-      expirationDate,
-      licenseId: validatorData.licenseId,
+      researchField,
+      researchInstitute: validatorData.researchInstitute,
       us_state: validatorData.state,
       //postal_code: toAscii(validatorData.zipcode),
       contactEmail,
@@ -165,8 +166,8 @@ export default class Metadata {
     let pendingChanges = await this.metadataInstance.methods.pendingChanges(miningKey).call()
     let createdDate = pendingChanges.createdDate > 0 ? moment.unix(pendingChanges.createdDate).format('YYYY-MM-DD') : ''
     let updatedDate = pendingChanges.updatedDate > 0 ? moment.unix(pendingChanges.updatedDate).format('YYYY-MM-DD') : ''
-    let expirationDate =
-      pendingChanges.expirationDate > 0 ? moment.unix(pendingChanges.expirationDate).format('YYYY-MM-DD') : ''
+    let researchField =
+      pendingChanges.researchField > 0 ? moment.unix(pendingChanges.researchField).format('YYYY-MM-DD') : ''
     let contactEmail
     if (pendingChanges.hasOwnProperty('contactEmail')) {
       contactEmail = toAscii(pendingChanges.contactEmail)
@@ -181,8 +182,8 @@ export default class Metadata {
       instituteAddress: pendingChanges.instituteAddress,
       createdDate,
       updatedDate,
-      expirationDate,
-      licenseId: pendingChanges.licenseId,
+      researchField,
+      researchInstitute: pendingChanges.researchInstitute,
       us_state: pendingChanges.state,
       //postal_code: toAscii(validatorData.zipcode),
       contactEmail,
