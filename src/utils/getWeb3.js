@@ -35,9 +35,9 @@ let getWeb3 = () => {
 
         if (!(netId in constants.NETWORKS)) {
           netIdName = 'ERROR'
-          errorMsg = `You aren't connected to POA Network.
-              Please, switch to POA Network and refresh the page.
-              Check POA Network <a href='https://github.com/poanetwork/wiki' target='blank'>Wiki</a> for more info.`
+          errorMsg = `You aren't connected to bloxberg Network.
+              Please, switch to the bloxberg Network and refresh the page.
+              You can connect via https://core.bloxberg.org in Metamask`
           console.log('This is an unknown network.')
         } else {
           netIdName = constants.NETWORKS[netId].NAME
@@ -72,7 +72,6 @@ let getWeb3 = () => {
       document.title = `${netIdName} - bloxberg Validators DApp`
 
       if (errorMsg !== null) {
-        console.log(errorMsg)
         reject({ message: errorMsg })
         return
       }

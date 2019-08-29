@@ -1,6 +1,7 @@
 import React from 'react'
 import { IconGithub } from '../IconGithub'
 import { IconPOA } from '../IconPOA'
+import { IconBloxberg } from '../IconBloxberg'
 import { IconTelegram } from '../IconTelegram'
 import { IconTwitter } from '../IconTwitter'
 
@@ -32,25 +33,25 @@ export const SocialIcons = ({ extraClass = '', networkBranch = '' }) => {
 
   return (
     <div className={`ft-SocialIcons ${extraClass}`}>
-      <IconTwitter
+      {/* <IconTwitter
         backgroundColor={backgroundColor}
         color={iconColor}
         text="POA Twitter"
         url="https://twitter.com/poanetwork"
-      />
-      <IconTelegram
+      /> */}
+      {/* <IconTelegram
         backgroundColor={backgroundColor}
         color={iconColor}
         text="POA Telegram"
         url="https://t.me/oraclesnetwork"
-      />
+      /> */}
       <IconGithub
         backgroundColor={backgroundColor}
         color={iconColor}
-        text="POA Github"
-        url="https://github.com/poanetwork"
+        text="bloxberg Github"
+        url="https://github.com/bloxberg-org"
       />
-      <IconPOA text="POA Network" url="https://poa.net" backgroundColor={backgroundColor} color={iconColor} />
+      {/* <IconBloxberg text="bloxberg Network" url="https://bloxberg.org" backgroundColor={backgroundColor} color={iconColor} /> */}
     </div>
   )
 }

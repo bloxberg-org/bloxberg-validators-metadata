@@ -25,7 +25,7 @@ export default class Metadata {
   async init({ web3, netId, addresses }) {
     this.web3 = web3
     this.netId = Number(netId)
-    this.gasPrice = web3.utils.toWei('2', 'gwei')
+    this.gasPrice = web3.utils.toWei('20', 'gwei')
 
     const { METADATA_ADDRESS, MOC } = addresses
     console.log('Metadata contract Address: ', METADATA_ADDRESS)
@@ -49,8 +49,6 @@ export default class Metadata {
     lastName,
     researchInstitute,
     instituteAddress,
-    state,
-    zipcode,
     researchField,
     contactEmail,
     isCompany,
@@ -62,13 +60,15 @@ export default class Metadata {
       researchField = 0
     }
     let input = [
-      this.web3.utils.fromAscii(firstName),
-      this.web3.utils.fromAscii(lastName),
-      this.web3.utils.fromAscii(researchInstitute),
-      instituteAddress,
-      this.web3.utils.fromAscii(state),
-      this.web3.utils.fromAscii(zipcode),
-      researchField
+      firstName,
+      lastName,
+      contactEmail,
+      researchInstitute,
+      researchField,
+      instituteAddress
+      // this.web3.utils.fromAscii(state),
+      // this.web3.utils.fromAscii(zipcode),
+
     ]
     if (helpersGlobal.isCompanyAllowed(this.netId)) {
       input.push(this.web3.utils.fromAscii(contactEmail))
@@ -99,7 +99,7 @@ export default class Metadata {
 
   async getValidatorData(miningKey) {
     if (!miningKey) {
-      helpersGlobal.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
+      //helpersGlobal.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
       return {}
     }
     let validatorData = await this.metadataInstance.methods.validatorsMetadata(miningKey).call()
@@ -127,7 +127,7 @@ export default class Metadata {
       updatedDate,
       researchField,
       researchInstitute: validatorData.researchInstitute,
-      us_state: validatorData.state,
+      // us_state: validatorData.state,
       //postal_code: toAscii(validatorData.zipcode),
       contactEmail,
       isCompany
@@ -159,15 +159,16 @@ export default class Metadata {
 
   async getPendingChange(miningKey) {
     if (!miningKey) {
-      helpersGlobal.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
+      
       return {}
     }
 
     let pendingChanges = await this.metadataInstance.methods.pendingChanges(miningKey).call()
     let createdDate = pendingChanges.createdDate > 0 ? moment.unix(pendingChanges.createdDate).format('YYYY-MM-DD') : ''
     let updatedDate = pendingChanges.updatedDate > 0 ? moment.unix(pendingChanges.updatedDate).format('YYYY-MM-DD') : ''
-    let researchField =
-      pendingChanges.researchField > 0 ? moment.unix(pendingChanges.researchField).format('YYYY-MM-DD') : ''
+    // let researchField =
+    //   pendingChanges.researchField > 0 ? moment.unix(pendingChanges.researchField).format('YYYY-MM-DD') : ''
+    let researchField = pendingChanges.researchField
     let contactEmail
     if (pendingChanges.hasOwnProperty('contactEmail')) {
       contactEmail = toAscii(pendingChanges.contactEmail)
@@ -224,7 +225,7 @@ export default class Metadata {
       }
     } else if (senderMiningKey === '0x0000000000000000000000000000000000000000') {
       throw {
-        message: messages.invalidaVotingKey
+        //message: messages.invalidaVotingKey
       }
     }
     return await this.metadataInstance.methods
@@ -250,7 +251,7 @@ export default class Metadata {
     })
     if (senderMiningKey === '0x0000000000000000000000000000000000000000') {
       throw {
-        message: messages.invalidaVotingKey
+        //message: messages.invalidaVotingKey
       }
     }
     if (Number(confirmations[0]) < Number(getMinThreshold)) {

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import emailValidator from 'email-validator'
 import helpers from './utils/helpers'
+import PoaConsensus from './contracts/PoaConsensus.contract'
 import moment from 'moment'
 import { ButtonConfirm } from './components/ButtonConfirm'
 import { CreateKeysAddressNote } from './components/CreateKeysAddressNote'
@@ -82,8 +83,6 @@ class App extends Component {
       form: {
         instituteAddress: currentData.instituteAddress,
         researchField: currentData.researchField,
-        postal_code: currentData.postal_code,
-        us_state: currentData.us_state,
         firstName: currentData.firstName,
         lastName: currentData.lastName,
         researchInstitute: currentData.researchInstitute,
@@ -94,14 +93,27 @@ class App extends Component {
     })
   }
   async setIsValidVotingKey() {
-    this.isValidVotingKey = await this.getKeysManager().isVotingActive(this.getVotingKey())
+   console.log(this.getVotingKey())
+   console.log(this.props.web3Config.metadataContract.miningKeys)
+   this.isValidVotingKey = this.checkMiningKey(this.getVotingKey())
+   //this.isValidVotingKey = await this.getKeysManager().isVotingActive(this.getVotingKey())
     if (!this.isValidVotingKey) {
       this.setState({ loading: false })
-      helpers.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
+      //this.setState({ loading: true })
+      //helpers.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
     }
   }
   getKeysManager() {
     return this.props.web3Config.keysManager
+  }
+  checkMiningKey(currentKey) {
+    let miningKeyBool  = this.props.web3Config.metadataContract.miningKeys.includes(currentKey)
+    if (miningKeyBool) {
+      return true
+    }
+    else {
+      return false
+    }
   }
   getMetadataContract() {
     return this.props.web3Config.metadataContract
@@ -119,12 +131,12 @@ class App extends Component {
         helpers.generateAlert('warning', 'Warning!', `Full name cannot be empty`)
         return false
       }
+    } else {
       if (!emailValidator.validate(this.state.form.contactEmail)) {
         this.setState({ loading: false })
         helpers.generateAlert('warning', 'Warning!', `Contact E-mail is invalid`)
         return false
       }
-    } else {
       const keys = Object.keys(this.state.form)
       keys.forEach(key => {
         if (!this.state.form[key]) {
@@ -135,12 +147,6 @@ class App extends Component {
           }
         }
       })
-      const isAfter = moment(this.state.form.researchField).isAfter(moment())
-      if (!isAfter) {
-        this.setState({ loading: false })
-        helpers.generateAlert('warning', 'Warning!', 'Expiration date should be valid')
-        return false
-      }
     }
     return true
   }
@@ -171,9 +177,9 @@ class App extends Component {
       let form = this.state.form
       form.instituteAddress = `${address_components.street_number} ${address_components.route} ${
         address_components.locality
-      }`
-      form.us_state = address_components.administrative_area_level_1
-      form.postal_code = address_components.postal_code
+      } ${address_components.postal_code}`
+      //form.us_state = address_components.administrative_area_level_1
+      //form.postal_code = address_components.postal_code
       this.setState({
         form
       })
@@ -182,15 +188,17 @@ class App extends Component {
   async onClick() {
     this.setState({ loading: true })
     const isFormValid = this.checkValidation()
+    // const isFormValid = true
     if (isFormValid) {
       const votingKey = this.getVotingKey()
-      const isValid = await this.getKeysManager().isVotingActive(votingKey)
-
+      const isValid = this.checkMiningKey(votingKey)
+      //const isValid = await this.getKeysManager().isVotingActive(votingKey)
+      // const isValid = true
       if (isValid) {
         await this.sendTxToContract()
       } else {
         this.setState({ loading: false })
-        helpers.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
+        //helpers.generateAlert('warning', 'Warning!', messages.invalidaVotingKey)
         return
       }
     }
@@ -200,15 +208,14 @@ class App extends Component {
       .createMetadata({
         firstName: this.state.form.firstName,
         lastName: this.state.form.lastName,
-        researchInstitute: this.state.form.researchInstitute,
-        instituteAddress: this.state.form.instituteAddress,
-        state: this.state.form.us_state,
-        zipcode: this.state.form.postal_code,
-        researchField: moment(this.state.form.researchField).unix(),
         contactEmail: this.state.form.contactEmail,
-        isCompany: this.state.form.isCompany,
+        researchInstitute: this.state.form.researchInstitute,
+        researchField: this.state.form.researchField,
+        instituteAddress: this.state.form.instituteAddress,
+        //researchField: moment(this.state.form.researchField).unix(),
         votingKey: this.getVotingKey(),
-        hasData: this.state.hasData
+        // isCompany: this.state.form.isCompany,
+        // hasData: this.state.hasData
       })
       .then(receipt => {
         this.setState({ loading: false })
@@ -221,7 +228,7 @@ class App extends Component {
           errDescription = `Error: ${constants.userDeniedTransactionPattern}`
         else errDescription = error.message
         this.setState({ loading: false })
-
+        console.log(error)
         let msg = `
           Something went wrong!<br/><br/>
           ${errDescription}
@@ -296,21 +303,21 @@ class App extends Component {
             title={isCompany ? 'Full name' : 'First name'}
             value={this.state.form.firstName}
           />
-          {isCompany ? (
-            <FormInput
-              id="contactEmail"
-              onChange={this.onChangeFormField}
-              title="Contact E-mail"
-              type="email"
-              value={this.state.form.contactEmail}
-            />
-          ) : null}
           {isCompany ? null : (
             <FormInput
               id="lastName"
               onChange={this.onChangeFormField}
               title="Last name"
               value={this.state.form.lastName}
+            />
+          )}
+          {isCompany ? null : (
+            <FormInput
+              id="contactEmail"
+              onChange={this.onChangeFormField}
+              title="Contact E-mail"
+              type="email"
+              value={this.state.form.contactEmail}
             />
           )}
           {isCompany ? null : (
@@ -326,7 +333,6 @@ class App extends Component {
               id="researchField"
               onChange={this.onChangeFormField}
               title="Research Field"
-              type="date"
               value={this.state.form.researchField}
             />
           )}
@@ -336,18 +342,7 @@ class App extends Component {
               id="address"
               inputProps={inputProps}
               onSelect={this.onSelect}
-              title="Address"
-            />
-          )}
-          {isCompany ? null : (
-            <FormInput id="us_state" onChange={this.onChangeFormField} title="State" value={this.state.form.us_state} />
-          )}
-          {isCompany ? null : (
-            <FormInput
-              id="postal_code"
-              onChange={this.onChangeFormField}
-              title="Zip code"
-              value={this.state.form.postal_code}
+              title="Institute Address"
             />
           )}
         </form>

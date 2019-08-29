@@ -117,7 +117,7 @@ class AppMainRouter extends Component {
       this.setState({ showSearch: false })
 
       if (this.state.injectedWeb3 === false) {
-        helpers.generateAlert('warning', 'Warning!', 'Metamask was not found')
+      //  helpers.generateAlert('warning', 'Warning!', 'Metamask was not found')
       }
     } else {
       this.setState({ showSearch: true })

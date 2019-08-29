@@ -29,11 +29,11 @@ constants.navigationData = [
     title: 'Set Metadata',
     url: `${constants.rootPath}/set`
   },
-  {
-    icon: 'pending',
-    title: 'Pending Changes',
-    url: `${constants.rootPath}/pending-changes`
-  }
+  // {
+  //   icon: 'pending',
+  //   title: 'Pending Changes',
+  //   url: `${constants.rootPath}/pending-changes`
+  // }
 ]
 
 constants.NETWORKS = {
