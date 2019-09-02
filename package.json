@@ -1,8 +1,8 @@
 {
-  "name": "poa-dapps-validators",
+  "name": "bloxberg-dapps-validators",
   "version": "0.2.0",
   "private": false,
-  "homepage": "https://poanetwork.github.io/",
+  "homepage": "https://validators.bloxberg.org",
   "dependencies": {
     "@babel/core": "7.1.0",
     "@babel/preset-react": "7.0.0",
