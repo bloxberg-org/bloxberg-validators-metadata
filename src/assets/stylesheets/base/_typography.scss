@@ -1,8 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600,700');
+//@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600,700');
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 body {
     -webkit-font-smoothing: antialiased;
     color: $base-text-color;
-    font-family: "Nunito", sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: $base-font-size;
 }

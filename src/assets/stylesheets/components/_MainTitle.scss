@@ -18,20 +18,26 @@
 }
 
 .sw-MainTitle_Text {
-  color: #333;
-  font-size: 24px;
-  line-height: 38px;
+  color: $headline-color;
+  font-size: 3rem;
+  line-height: 50px;
   margin: 0;
+  margin-left: 5px;
 }
 
 .sw-MainTitle_ExtraText {
-  color: #333;
-  font-size: 14px;
+  color: $headline-color;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 38px;
+  line-height: 50px;
   margin: 0;
 
   strong {
     font-weight: 700;
   }
+}
+
+.sw-diamond {
+  height: 50px;
+  width: 70px;
 }

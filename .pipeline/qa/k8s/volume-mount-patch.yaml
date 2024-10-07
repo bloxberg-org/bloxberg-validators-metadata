@@ -1,0 +1,8 @@
+spec:
+  template:
+    spec:
+      containers:
+        - name: ${PROJECT_NAME}
+          volumeMounts:
+            - name: ${PROJECT_NAME}-${volume_name}
+              mountPath: ${volume_path}

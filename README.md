@@ -26,5 +26,4 @@ That's it. After DApp will get a receipt for the transaction you'll see a succes
 ## Building from source
 
 1) `npm i`
-
 2) `npm start`

@@ -1,0 +1,7 @@
+spec:
+  template:
+    spec:
+      volumes:
+        - name: ${PROJECT_NAME}-${volume_name}
+          persistentVolumeClaim:
+            claimName: ${PROJECT_NAME}-${volume_name}

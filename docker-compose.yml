@@ -1,0 +1,10 @@
+version: '3.6'
+services:
+  metadata:
+    container_name: metadata-cont
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    restart: unless-stopped

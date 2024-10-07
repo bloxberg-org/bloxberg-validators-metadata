@@ -1,0 +1,249 @@
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:latest"
+
+.ubuntu:
+  image: "docker.io/ubuntu:latest"
+
+image: "quay.io/buildah/stable:v1.23.1"
+
+variables:
+  PROJECT_NAME: bloxberg-validators-metadata
+  # persistent volume "name:mountpoint:space [...]"
+  # PERSISTENT_VOLUMES: "volume1:/home/parity/.local/share/io.parity.ethereum:5Gi"
+  # secrets "name:mountpoint [...]
+  # SECRETS: "password:/bootnode-password"
+
+  MAX_MEM: "1Gi"
+  MAX_CPU: "1"
+
+  INTERNAL_EXPOSE: ""
+  EXTERNAL_EXPOSE: ""
+  POSTGRES_ENABLED: "false"
+  STORAGE_DRIVER: "overlay"
+  BUILDAH_FORMAT: "docker"
+  BUILDAH_ISOLATION: "chroot"
+  ROLLOUT_RESOURCE_TYPE: deployment
+  KUBE_INGRESS_BASE_DOMAIN: test.bloxberg.org
+
+
+  ENV_NUT_PIPELINE_STAGING: "pipeline staging"
+  ENV_QA_PIPELINE_QA: "pipeline qa"
+  ENV_PRODUCTION_PIPELINE_PRODUCTION: "pipeline production"
+  ENV_THOTH_PIPELINE_THOTH: "pipeline thoth"
+  ENV_NUT_PIPELINE_NUT: "pipeline nut"
+
+stages:
+  - build
+  - publish
+  - staging
+  - qa
+  - production
+
+build:
+  stage: build
+  script:
+    - .pipeline/build/buildah
+  rules:
+    - if: $CI_COMMIT_BRANCH             # Execute jobs when a new commit is pushed to master branch
+    - if: $CI_MERGE_REQUEST_ID          # Execute jobs in merge request context
+
+registry:
+  stage: publish
+  script:
+    - .pipeline/publish/buildah
+  rules:
+    - if: $CI_COMMIT_BRANCH             # Execute jobs when a new commit is pushed to master branch
+  dependencies:
+    - build
+
+nut start stage:
+  extends: .auto-deploy
+  stage: staging
+  dependencies: []
+  script:
+    - source .pipeline/env
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+  environment:
+    name: nut/staging
+    url: http://$CI_PROJECT_PATH_SLUG.nut.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: nut stop stage
+  when: manual
+
+nut stop stage:
+  extends: .auto-deploy
+  stage: staging
+  variables:
+    GIT_STRATEGY: none
+  dependencies: []
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+  environment:
+    name: nut/staging
+    action: stop
+  when: manual
+
+
+thoth start stage:
+  extends: .auto-deploy
+  stage: staging
+  dependencies: []
+  script:
+    - source .pipeline/env
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+  environment:
+    name: thoth/staging
+    url: http://$CI_PROJECT_PATH_SLUG.thoth.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: thoth stop stage
+  when: manual
+
+thoth stop stage:
+  extends: .auto-deploy
+  stage: staging
+  variables:
+    GIT_STRATEGY: none
+  dependencies: []
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+  environment:
+    name: thoth/staging
+    action: stop
+  when: manual
+
+nut start qa:
+  extends: .auto-deploy
+  stage: qa
+  dependencies: []
+  script:
+    - source .pipeline/env
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - .pipeline/qa/deploy
+  environment:
+    name: nut/qa
+    url: https://$PROJECT_NAME.qa.nut.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: nut stop qa
+  when: manual
+
+
+nut stop qa:
+  extends: .auto-deploy
+  stage: qa
+  dependencies: []
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+    - .pipeline/qa/stop
+  environment:
+    name: nut/qa
+    action: stop
+  when: manual
+
+
+thoth start qa:
+  extends: .auto-deploy
+  stage: qa
+  dependencies: []
+  script:
+    - source .pipeline/env
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - .pipeline/qa/deploy
+  environment:
+    name: thoth/qa
+    url: https://$PROJECT_NAME.qa.thoth.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: thoth stop qa
+  when: manual
+
+thoth stop qa:
+  extends: .auto-deploy
+  stage: qa
+  dependencies: []
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+    - .pipeline/qa/stop
+  environment:
+    name: thoth/qa
+    action: stop
+  when: manual
+
+prod nut GWDG:
+  extends: .auto-deploy
+  stage: production
+  dependencies: []
+  script:
+    - source .pipeline/env
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+  environment:
+    name: nut/production
+    url: https://$PROJECT_NAME.nut.$KUBE_INGRESS_BASE_DOMAIN
+  only:
+    refs:
+      - stable
+  when: manual
+
+
+prod thoth MCPDF:
+  extends: .auto-deploy
+  stage: production
+  dependencies: []
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+  environment:
+    name: thoth/production
+    url: https://$PROJECT_NAME.nut.$KUBE_INGRESS_BASE_DOMAIN
+  only:
+    refs:
+      - stable
+  when: manual
+
+activate nut:
+  extends: .ubuntu
+  stage: production
+  dependencies: []
+  script:
+    - export
+    - .pipeline/publish/dns-record
+  environment:
+    name: nut/production
+    url: https://$PROJECT_NAME.KUBE_INGRESS_BASE_DOMAIN
+  when: manual
+
+
+activate thoth:
+  extends: .ubuntu
+  stage: production
+  dependencies: []
+  script:
+    - export
+    - .pipeline/publish/dns-record
+  environment:
+    name: thoth/production
+    url: https://$PROJECT_NAME.KUBE_INGRESS_BASE_DOMAIN
+  when: manual

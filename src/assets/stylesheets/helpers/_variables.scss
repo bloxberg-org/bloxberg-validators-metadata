@@ -19,11 +19,18 @@ $kovan-cyan-darker: #1f857f;
 $kovan-menu-icon-color: #fff;
 
 // colors
-$gray-text-color: #333;
+$gray-text-color: #fff;
+$new_style_color: #29404f;
+$new_style_color_dark: #1c2b36;
+$new_style_purple: #e01d6c;
+
+//background
+$background-color: $new_style_color;
 
 // typography
-$base-text-color: #333;
+$base-text-color: #fff;
 $base-font-size: 14px;
+$headline-color: #aecbd3;
 
 // borders
 $base-border-color: #e4e4e4;
@@ -47,15 +54,21 @@ $breakpoint-xxxl: 1366px;
 
 // header
 $header-links-container-height: 70px;
-$header-height: 70px;
+$header-height: 118px;
+$header-color: #1c2b36;
+$header-hover-color: $new_style_purple;
 
 // search
-$search-container-height: 50px;
+$search-container-height: 30px;
+$search-container-height-focused: 50px;
+$search_bar_color: #000;
+$search_text_color: #fff;
 
 // mobile menu
 $header-mobile-menu-container-height: 220px;
 
 // footer
+$footer-background-color: $new_style_color_dark;
 $footer-height: 60px;
 $footer-height_desktop: 66px;
 $footer-height_mobile: 132px;

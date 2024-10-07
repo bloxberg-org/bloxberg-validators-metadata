@@ -21,12 +21,12 @@ constants.branches = {
 constants.navigationData = [
   {
     icon: 'all',
-    title: 'All',
+    title: 'SHOW METADATA',
     url: constants.rootPath
   },
   {
     icon: 'set',
-    title: 'Set Metadata',
+    title: 'SET METADATA',
     url: `${constants.rootPath}/set`
   },
   // {
@@ -62,7 +62,7 @@ constants.NETWORKS = {
     TESTNET: false
   },
   '8995': {
-    NAME: 'bloxberg',
+    NAME: 'master',
     RPC: 'https://core.bloxberg.org',
     BRANCH: constants.branches.BLOXBERG,
     TESTNET: false

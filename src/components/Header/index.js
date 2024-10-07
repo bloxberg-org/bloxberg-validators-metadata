@@ -25,16 +25,17 @@ export const Header = ({
   onMenuToggle,
   showMobileMenu = false
 }) => {
-  let networkSelect = !injectedWeb3 ? (
-    <Select
-      className="top-Select"
-      clearable={false}
-      onChange={onChange}
-      options={getNetworkOptions()}
-      searchable={false}
-      value={netId}
-    />
-  ) : null
+  // let networkSelect = !injectedWeb3 ? (
+  //   <Select
+  //     className="top-Select"
+  //     clearable={false}
+  //     onChange={onChange}
+  //     options={getNetworkOptions()}
+  //     searchable={false}
+  //     value={netId}
+  //   />
+  // ) : null
+  let networkSelect = null
 
   return (
     <header className={`sw-Header sw-Header-${networkBranch} ${showMobileMenu ? 'sw-Header-menu-open' : ''}`}>

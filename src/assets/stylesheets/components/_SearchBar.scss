@@ -1,16 +1,25 @@
 .sw-SearchBar {
-    background-color: $poa-purple-darker;
+    //background-color: $poa-purple-darker;
+    background-color: $search_bar_color;
     box-sizing: border-box;
     display: flex;
     flex-shrink: 0;
-    height: $search-container-height;
+    height: 35px;
     justify-content: center;
     left: 0;
-    padding: 10px 0 0 0;
+    padding: 5px 0 0 0;
     position: fixed;
     right: 0;
-    top: 70px;
+    top: 118px;
     z-index: 123;
+
+    /*
+    &:focus,
+    &:active{
+        padding: 10px 0 0 0;
+        height: $search-container-height-focused;
+    }
+    */
 
     &#{ & }-core {
         background-color: $poa-purple-darker;
@@ -37,6 +46,7 @@
     &:active {
         color: $input-color;
     }
+    
 
     @include placeholder-full($color: $placeholder-color);
 }
@@ -50,14 +60,20 @@
     border: none;
     box-sizing: border-box;
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
-    height: 30px;
+    height: 25px;
     outline: none;
     padding-left: 30px;
     width: 100%;
+    color: #fff;
 
-
+    /*
+    &:focus,
+    &:active{
+        height: 30px;
+    }
+    */
 
     &#{ & }-core {
         @include input-color(rgba(255, 255, 255, 0.5), #fff);

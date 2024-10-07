@@ -1,0 +1,24 @@
+#!/bin/bash
+
+exit_on_error() {
+    exit_code=$1
+    last_command=${@:2}
+    if [ $exit_code -ne 0 ]; then
+        >&2 echo "\"${last_command}\" command failed with exit code ${exit_code}."
+        exit $exit_code
+    fi
+}
+
+echo "Building docker image"
+
+buildah login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+buildah bud -t ${CI_REGISTRY_IMAGE}/${CI_COMMIT_REF_SLUG}:${CI_COMMIT_SHA} .
+exit_on_error $? !!
+
+
+echo "Publishing docker image to registry"
+buildah push ${CI_REGISTRY_IMAGE}/${CI_COMMIT_REF_SLUG}:${CI_COMMIT_SHA} 
+buildah push ${CI_REGISTRY_IMAGE}/${CI_COMMIT_REF_SLUG}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}/${CI_COMMIT_BRANCH}:latest
+exit_on_error $? !!
+
+buildah logout $CI_REGISTRY

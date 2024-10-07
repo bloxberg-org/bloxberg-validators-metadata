@@ -1,0 +1,88 @@
+#!/bin/bash
+
+apk add gettext
+
+# create namespace
+# in contrast to kubectl create this will not raise an error when namespace already exists
+kubectl create namespace ${CI_PROJECT_NAMESPACE}-qa --dry-run -o yaml | kubectl apply -f -
+
+export CI_PROJECT_NAME=$(echo $CI_PROJECT_NAME | tr [:upper:] [:lower:])
+
+
+# create secret to access registry
+echo "CREATING SECRET $CI_DEPLOY_USER ${CI_DEPLOY_USER:-$CI_REGISTRY_USER}"
+kubectl create secret -n "$KUBE_NAMESPACE" \
+ docker-registry "gitlab-registry-${CI_PROJECT_PATH_SLUG}" \
+ --docker-server="$CI_REGISTRY" \
+ --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" \
+ --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" \
+ --docker-email="$GITLAB_USER_EMAIL" \
+ -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+
+
+# create deployment patching deployment in the following steps
+kubectl apply -n ${CI_PROJECT_NAMESPACE}-qa -f <(envsubst < .pipeline/qa/k8s/deployment.yaml)
+
+
+# create persistent volume claims
+echo "CREATE/MOUNT PERSISTENT VOLUMES: $PERSISTENT_VOLUMES"
+for volume in $PERSISTENT_VOLUMES
+do
+	export volume_name=$(echo $volume | cut -d: -f1)
+	export volume_path=$(echo $volume | cut -d: -f2)
+	export volume_size=$(echo $volume | cut -d: -f3)
+
+	echo "volume: $volume_name:$volume_path ($volume_size)"
+	kubectl apply -n ${CI_PROJECT_NAMESPACE}-qa -f <(envsubst <.pipeline/qa/k8s/persistentvolumeclaim.yaml) 
+	kubectl apply -n ${CI_PROJECT_NAMESPACE}-qa -f <(envsubst <.pipeline/qa/k8s/persistentvolume.yaml) 
+	kubectl patch deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/volume-claim-patch.yaml)" 
+	kubectl patch deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/volume-mount-patch.yaml)"  
+done
+
+
+# mount secrets
+echo "MOUNT SECRETS $SECRETS"
+for secret in $SECRETS
+do
+	export secret_name=$(echo $secret | cut -d: -f1)
+	export secret_path=$(echo $secret | cut -d: -f2)
+
+	echo "patch deployment: $secret_name:$secret_path"
+	kubectl patch deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/secret-volume-patch.yaml)"
+	kubectl patch deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/secret-mount-patch.yaml)" 
+done
+
+
+# add environment variables
+echo "ADD ENV VARIABLES"
+for variable in $(env | grep ^K8S_SECRET_ | sed -e "s/^K8S_SECRET_//")
+do
+	echo $variable
+	export name=$(echo $variable | cut -d= -f1)
+	export value=$(echo $variable | cut -d= -f2)
+
+	echo "adding variable $name=$value"
+	kubectl patch deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/environment-patch.yaml)" 
+
+done
+
+
+# creating services for exposed ports
+echo "EXPOSING PORTS"
+for PORT in ${INTERNAL_EXPOSE}
+do
+    kubectl -n ${CI_PROJECT_NAMESPACE}-qa expose service ${PROJECT_NAME} --port=${PORT} --target-port=${PORT} --name=int-${PORT}
+done
+
+
+echo "SETTING EXTERNAL IP"
+# export ip=$(kubectl get svc -n gitlab-managed-apps | grep ingress-nginx-ingress-controller | tr -s " " |  cut -d" "  -f5)
+<<<<<<< HEAD:pipeline/.gitlab/qa/deploy
+kubectl patch service/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.k8s/service.yaml)"
+=======
+kubectl patch service/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa -p "$(envsubst <.pipeline/qa/k8s/service.yaml)"
+>>>>>>> tmp:pipeline/.pipeline/qa/deploy
+
+
+echo "finished deployment:"
+kubectl get deployment/${PROJECT_NAME} -n ${CI_PROJECT_NAMESPACE}-qa 

@@ -1,0 +1,10 @@
+const app = require("../../admin/assets/js/app");
+
+test('test timeConverter', () => {
+	expect(app.timeConverter(0)).toBe("Jan 1, 1970 at 0:0:0"); 
+	expect(app.timeConverter(1)).toBe("Jan 1, 1970 at 0:0:1"); 
+});
+
+test('test pass', () => {
+	expect(0).toBe(0); 
+});

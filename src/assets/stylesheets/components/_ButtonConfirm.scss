@@ -2,7 +2,7 @@
     align-items: center;
     border-radius: 5px;
     border: 0;
-    color: #fff;
+    color: $base-text-color;
     cursor: pointer;
     display: flex;
     font-size: 14px;
@@ -15,11 +15,13 @@
     text-decoration: none;
     text-transform: capitalize;
     transition: 0.15s background-color;
-    background-color: $poa-purple;
+    //background-color: $poa-purple;
+    background-color: $new_style_color_dark;
 
         &:active,
         &:hover {
-            background-color: darken($poa-purple, 10%);
+            //background-color: darken($poa-purple, 10%);
+            background-color: #1c2b36
         }
 
     &#{ & }-core {

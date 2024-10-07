@@ -1,0 +1,12 @@
+include: '.autodevops-template.yml'
+
+variables:
+  PROJECT_NAME: bloxberg-validators-metadata
+  MAX_MEM: "1Gi"
+  MAX_CPU: "1"
+  
+  APP_PORT: "5000" # Specify the main communication port to the App. This port will be used to determine if service is online. (default 5000)     
+  INGRESS_PORT: "5000" # Specify the port exposed externally via nginx. Please set it accordingly  to avoid security exposure. (default none) 
+  INTERNAL_PORTS: "" # Specify additional ports exposed to the cluster, separated by space. (default none)
+  EXTERNAL_PORTS: "" # Specify additional ports exposed to the world, separated by space. (default node)
+  ADDITIONAL_HOSTS: "validators.bloxberg.org"  
