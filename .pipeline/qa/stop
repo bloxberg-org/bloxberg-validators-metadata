@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for PORT in ${INTERNAL_EXPOSE}
-do
-	echo deleting service with port:$PORT
-	kubectl -n  ${CI_PROJECT_NAMESPACE}-qa delete service int-${PORT}
-done

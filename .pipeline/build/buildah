@@ -1,6 +1,0 @@
-#!/bin/sh
-
-echo "Building application $CI_REGISTRY_USER"
-buildah login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-
-buildah logout $CI_REGISTRY
